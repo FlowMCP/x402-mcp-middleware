@@ -43,7 +43,7 @@ await client.start()
 
 client.usePaymentHandler( async ( { originalRequest, response } ) => {
     const paymentRequirementsPayload = response.data
-
+console.log( 'paymentRequirementsPayload', paymentRequirementsPayload )
     const { paymentOption } = ClientExact
         .selectMatchingPaymentOption( { paymentRequirementsPayload, allowedPaymentOptions, chainId } )
     const { scheme, network } = paymentOption
@@ -57,14 +57,16 @@ client.usePaymentHandler( async ( { originalRequest, response } ) => {
 console.log( 'retryResponse', retryResponse )
     return retryResponse
 } )
-/*
+
 const { status: s1, data: d1 } = await client
-    .callTool( { toolName: 'free_read_example_pinata', args: {} } )
+    .callTool( { toolName: 'paid_ping_x402', args: {} } )
 console.log('status', s1, 'data', d1['result']['content'] )
-*/
+
+
+/*
 const { status: s2, data: d2 } = await client
     .callTool( { toolName: 'free_read_cid_pinata', args: { 'cid': 'QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/1'} } )
 console.log('status', s2, 'data', d2['result']['content'] )
-
+*/
 
 await client.close()

@@ -54,13 +54,14 @@ const { managerVersion } = ServerManager
     .getPackageVersion()
 const { envObject } = ServerManager
     .getEnvObject( { envPath } )
-const { x402Credentials: serverCredentials, privateKey: serverPrivateKey } = ServerManager
+const { x402Credentials, privateKey: x402PrivateKey } = ServerManager
     .getX402Credentials( { envPath, envSelection } )
 
 /*
 const { arrayOfSchemas } = await ServerManager
      .getArrayOfSchemas( { schemaPath } )
 */
+
 const { activationPayloads } = FlowMCP
     .prepareActivations( { arrayOfSchemas: [ ping, pinataRead ], envObject } )
 
@@ -68,7 +69,7 @@ const remoteServer = new RemoteServer( { 'silent': false } )
 const app = remoteServer.getApp()
 
 const middleware = await X402Middleware
-    .create( {  chainId, chainName, contracts, paymentOptions, restrictedCalls, serverCredentials, serverPrivateKey } )
+    .create( { chainId, chainName, contracts, paymentOptions, restrictedCalls, x402Credentials, x402PrivateKey } )
 
 app.use( ( await middleware ).mcp() )
 app.get( routePath, ( _, res ) => res.send( `X402 Remote Server v${managerVersion} is running!` ) )
