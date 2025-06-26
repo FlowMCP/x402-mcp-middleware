@@ -45,8 +45,9 @@ class X402Middleware {
             .forEach( ( call ) => {
                 const { method, name, activePaymentOptions } = call
 
+
                 const { preparedPaymentOptions } = ServerExact
-                    .getPreparedPaymentOptions( { paymentOptions, activePaymentOptions, x402Credentials } )
+                    .getPreparedPaymentOptions( { paymentOptions, activePaymentOptions, serverCredentials: x402Credentials } )
 
                 const { paymentRequirementsPayload } = ServerExact
                     .getPaymentRequirementsPayload( {

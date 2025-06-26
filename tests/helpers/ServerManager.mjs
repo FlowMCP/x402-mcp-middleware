@@ -80,7 +80,6 @@ class ServerManager {
     }
 
 
-
     static getPackageVersion() {
         const { version: managerVersion } = JSON.parse( fs.readFileSync( './package.json', 'utf-8' ) )
         console.log( `Manager version: ${managerVersion}` )
