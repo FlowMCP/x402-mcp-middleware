@@ -65,7 +65,7 @@ class X402Middleware {
                     .get( method )
                     .set( name, paymentRequirementsPayload )
             } )
-console.log( 'paymentRequirements', paymentRequirements )
+
         return paymentRequirements
     }
 
