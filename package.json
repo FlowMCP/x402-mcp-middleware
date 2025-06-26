@@ -1,0 +1,23 @@
+{
+  "name": "x402-mcp-middleware",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./src/index.mjs",
+  "scripts": {
+    "inspector": "npx @modelcontextprotocol/inspector"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+   "dependencies": {
+    "x402-core": "github:flowmcp/x402-core#d0806f174aa3b08dd9955dc8f3a6d8841466c375"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/inspector": "^0.14.1",
+    "@modelcontextprotocol/sdk": "^1.13.0",
+    "flowmcp": "github:flowmcp/flowmcp#a1523aa60699e168a6c7b4ec923ac5ee4f15d89a",
+    "schemaImporter": "github:flowmcp/flowMCP-schemas#3d378b3a61452126c833d667a9189ca578813c48",
+    "mcpServers": "github:flowmcp/flowmcp-servers#0c3c15d41ded418ad70d84d0ee267009e262af29"
+  }
+}
