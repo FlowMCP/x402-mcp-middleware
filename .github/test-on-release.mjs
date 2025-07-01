@@ -56,8 +56,7 @@ const { envObject } = ServerManager
     .getEnvObject( { envPath } )
 let { x402Credentials, privateKey: x402PrivateKey } = ServerManager
     .getX402Credentials( { envPath, envSelection } )
-x402PrivateKey = process.env.ACCOUNT_DEVELOPMENT2_PRIVATE_KEY || '0x123'
-
+x402PrivateKey = process.env.ACCOUNT_DEVELOPMENT2_PRIVATE_KEY
 /*
     const { arrayOfSchemas } = await ServerManager
         .getArrayOfSchemas( { schemaPath } )
