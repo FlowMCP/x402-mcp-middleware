@@ -12,7 +12,7 @@ This module provides a middleware component for building secure, payment-enabled
 To get started quickly, clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/YOUR_ORG_OR_NAME/YOUR_REPO_NAME.git
+git clone https://github.com/FlowMCP/x402-mcp-middleware
 cd YOUR_REPO_NAME
 npm i
 ````
