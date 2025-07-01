@@ -13,7 +13,7 @@ To get started quickly, clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/FlowMCP/x402-mcp-middleware
-cd YOUR_REPO_NAME
+cd x402-mcp-middleware
 npm i
 ````
 
