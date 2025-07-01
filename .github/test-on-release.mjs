@@ -73,4 +73,4 @@ app.get( routePath, ( _, res ) => res.send( `X402 Remote Server v${managerVersio
 
 remoteServer.addActivationPayloads( { activationPayloads, routePath, transportProtocols: [ 'sse' ] } )
 console.log( 'Success' )
-process.exit( 1 )
+process.exit( 0 )
