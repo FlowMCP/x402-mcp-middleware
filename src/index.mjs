@@ -123,7 +123,6 @@ class X402Middleware {
         struct['status'] = true
         return struct
     }
-
 }
 
 
