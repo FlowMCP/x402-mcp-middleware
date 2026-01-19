@@ -15,7 +15,8 @@ class JsonRpc {
 
     static isNotification( { request } ) {
         // Notifications have no 'id' field
-        const isNotification = request.id === undefined
+        // Also treat missing/invalid request as notification (pass through)
+        const isNotification = !request || request.id === undefined
 
         return { isNotification }
     }

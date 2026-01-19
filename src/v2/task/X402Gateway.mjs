@@ -19,6 +19,11 @@ class X402Gateway {
         return async function x402Middleware( req, res, next ) {
             const body = req.body
 
+            // No body (e.g., SSE connection) - pass through
+            if( !body ) {
+                return next()
+            }
+
             // Check if notification (no id) - pass through without response
             const { isNotification } = JsonRpc.isNotification( { request: body } )
             if( isNotification ) {

@@ -17,7 +17,7 @@
   "license": "MIT",
   "type": "module",
    "dependencies": {
-    "x402-core": "file:../../7-x402-core-module/x402-core"
+    "x402-core": "github:flowmcp/x402-core#81fc3d2a0985067776416b66550eeddee5317e10"
   },
   "devDependencies": {
     "@modelcontextprotocol/inspector": "^0.14.1",

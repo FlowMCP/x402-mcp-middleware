@@ -150,9 +150,38 @@ class MCPClientSSE {
                     const message = JSON.parse( data )
 
                     if( message.id && this.#pendingRequests.has( message.id ) ) {
-                        const { resolve } = this.#pendingRequests.get( message.id )
-                        this.#pendingRequests.delete( message.id )
+                        const { resolve, reject, request } = this.#pendingRequests.get( message.id )
 
+                        // Check for JSON-RPC error code 402 (Payment Required)
+                        if( message.error && message.error.code === 402 ) {
+                            // Call payment handlers with the 402 error data
+                            for( const handler of this.#paymentHandlers ) {
+                                try {
+                                    const retryResult = await handler( {
+                                        originalRequest: request,
+                                        response: { status: 402, data: message.error.data }
+                                    } )
+
+                                    this.#pendingRequests.delete( message.id )
+                                    resolve( retryResult )
+
+                                    return
+                                } catch( err ) {
+                                    this.#pendingRequests.delete( message.id )
+                                    reject( err )
+
+                                    return
+                                }
+                            }
+
+                            // No payment handler resolved it
+                            this.#pendingRequests.delete( message.id )
+                            resolve( { status: 402, data: message } )
+
+                            return
+                        }
+
+                        this.#pendingRequests.delete( message.id )
                         resolve( { status: 200, data: message } )
                     }
                 } catch( err ) {
@@ -220,7 +249,7 @@ class MCPClientSSE {
 
     async #sendRequest( { request, headers = {} } ) {
         return new Promise( async ( resolve, reject ) => {
-            this.#pendingRequests.set( request.id, { resolve, reject } )
+            this.#pendingRequests.set( request.id, { resolve, reject, request } )
 
             const res = await fetch( this.#endpointUrl.href, {
                 method: 'POST',
@@ -267,6 +296,33 @@ class MCPClientSSE {
             } else if( res.headers.get( 'content-type' )?.startsWith( 'application/json' ) ) {
                 const json = await res.json()
 
+                // Check for JSON-RPC error code 402 (Payment Required)
+                if( json.error && json.error.code === 402 ) {
+                    for( const handler of this.#paymentHandlers ) {
+                        try {
+                            const retryResult = await handler( {
+                                originalRequest: request,
+                                response: { status: 402, data: json.error.data }
+                            } )
+
+                            resolve( retryResult )
+                            this.#pendingRequests.delete( request.id )
+
+                            return
+                        } catch( err ) {
+                            reject( err )
+                            this.#pendingRequests.delete( request.id )
+
+                            return
+                        }
+                    }
+
+                    resolve( { status: 402, data: json } )
+                    this.#pendingRequests.delete( request.id )
+
+                    return
+                }
+
                 this.#responseInterceptors
                     .forEach( ( interceptor ) => {
                         try { interceptor( { status: res.status, data: json } ) } catch {}
@@ -282,8 +338,20 @@ class MCPClientSSE {
     }
 
 
-    async retryRequest( { request, headers = {} } ) {
-        const retryResponse = await this.#sendRequest( { request, headers } )
+    async retryRequest( { request, meta = {}, headers = {} } ) {
+        // Inject meta into params._meta for MCP v2 transport
+        const modifiedRequest = {
+            ...request,
+            params: {
+                ...request.params,
+                _meta: {
+                    ...( request.params?._meta || {} ),
+                    ...meta
+                }
+            }
+        }
+
+        const retryResponse = await this.#sendRequest( { request: modifiedRequest, headers } )
 
         return { retryResponse }
     }
