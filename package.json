@@ -1,8 +1,14 @@
 {
   "name": "x402-mcp-middleware",
-  "version": "0.2.2",
-  "description": "",
+  "version": "0.3.0",
+  "description": "X402 Payment Middleware for MCP Servers",
   "main": "./src/index.mjs",
+  "exports": {
+    ".": "./src/index.mjs",
+    "./legacy": "./src/legacy/index.mjs",
+    "./v1": "./src/v1/index.mjs",
+    "./v2": "./src/v2/index.mjs"
+  },
   "scripts": {
     "inspector": "npx @modelcontextprotocol/inspector"
   },
@@ -11,7 +17,7 @@
   "license": "MIT",
   "type": "module",
    "dependencies": {
-    "x402-core": "github:flowmcp/x402-core#d0806f174aa3b08dd9955dc8f3a6d8841466c375"
+    "x402-core": "file:../../7-x402-core-module/x402-core"
   },
   "devDependencies": {
     "@modelcontextprotocol/inspector": "^0.14.1",
