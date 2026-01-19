@@ -10,7 +10,13 @@
     "./v2": "./src/v2/index.mjs"
   },
   "scripts": {
-    "inspector": "npx @modelcontextprotocol/inspector"
+    "inspector": "npx @modelcontextprotocol/inspector",
+    "test:v1:server": "node tests/v1/1-simple-server.mjs",
+    "test:v1:client": "node tests/v1/2-simple-client.mjs",
+    "test:v2:server": "node tests/v2/1-simple-server.mjs",
+    "test:v2:client": "node tests/v2/2-simple-client.mjs",
+    "test:v2:proxy": "node tests/v2/3-proxy-server.mjs",
+    "test:ci": "node .github/test-on-release.mjs"
   },
   "keywords": [],
   "author": "",
