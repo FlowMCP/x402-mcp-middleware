@@ -1,10 +1,11 @@
-import { MCPClientSSE } from './client/MCPClientSSE.mjs'
-import { ClientExact } from 'x402-core'
-import { ServerManager } from './helpers/ServerManager.mjs'
+// v1 Test - Uses Legacy API
+import { MCPClientSSE } from '../client/MCPClientSSE.mjs'
+import { ClientExact } from 'x402-core/legacy'
+import { ServerManager } from '../helpers/ServerManager.mjs'
 
 
 const env = {
-    'envPath': './../../../.env',
+    'envPath': './../../../../.env',
     'envSelection': [
         [ 'clientPrivateKey', 'ACCOUNT_DEVELOPMENT_PRIVATE_KEY' ],
         [ 'clientProviderUrl', 'BASE_SEPOLIA_ALCHEMY_HTTP' ]

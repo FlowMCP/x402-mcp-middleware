@@ -1,8 +1,8 @@
-// ./src/index.mjs
+// v1 Test - Uses Legacy API (STDIO↔SSE Proxy)
 
-import { MCPStdioSSEProxy } from './client/MCPStdioSSEProxy.mjs'
-import { ClientExact } from 'x402-core'
-import { ServerManager } from './helpers/ServerManager.mjs'
+import { MCPStdioSSEProxy } from '../client/MCPStdioSSEProxy.mjs'
+import { ClientExact } from 'x402-core/legacy'
+import { ServerManager } from '../helpers/ServerManager.mjs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -16,7 +16,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const env = {
-    envPath: path.resolve(__dirname, '../../../../.env'),
+    envPath: path.resolve(__dirname, '../../../../../.env'),
     envSelection: [
         [ 'clientPrivateKey', 'ACCOUNT_DEVELOPMENT_PRIVATE_KEY' ],
         [ 'clientProviderUrl', 'BASE_SEPOLIA_ALCHEMY_HTTP' ]

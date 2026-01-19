@@ -1,16 +1,17 @@
+// v1 Test - Uses Legacy API
 import { RemoteServer } from 'mcpServers'
 import { FlowMCP } from 'flowmcp'
-import { ServerManager } from './helpers/ServerManager.mjs'
+import { ServerManager } from '../helpers/ServerManager.mjs'
 
-import { X402Middleware } from '../src/index.mjs'
+import { X402Middleware } from '../../src/legacy/index.mjs'
 
-import { schema as ping } from './schemas/v1.2.0/x402/ping.mjs'
-import { schema as pinataRead } from './schemas/v1.2.0/pinata/read.mjs'
+import { schema as ping } from '../schemas/v1.2.0/x402/ping.mjs'
+import { schema as pinataRead } from '../schemas/v1.2.0/pinata/read.mjs'
 
 
 const env = {
-    'envPath': './../../../.env',
-    'schemaPath': './../../../tests/schemas/v1.2.0/',
+    'envPath': './../../../../.env',
+    'schemaPath': './../../../../tests/schemas/v1.2.0/',
     'envSelection': [
         [ 'facilitatorPrivateKey', 'ACCOUNT_DEVELOPMENT2_PRIVATE_KEY' ],
         [ 'payTo1',                'ACCOUNT_DEVELOPMENT2_PUBLIC_KEY'  ],
