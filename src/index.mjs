@@ -1,4 +1,4 @@
-import { ServerExact, NonceStore } from 'x402-core'
+import { ServerExact, NonceStore } from 'x402-core/legacy'
 import { X402Gateway } from './task/X402Gateway.mjs'
 
 
