@@ -25,7 +25,7 @@ function loadEnv( envPath ) {
     return env
 }
 
-const env = loadEnv( './../../../../../.env' )
+const env = loadEnv( './../../../.env' )
 
 
 // Configuration
