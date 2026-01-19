@@ -2,7 +2,7 @@ import { RemoteServer } from 'mcpServers'
 import { FlowMCP } from 'flowmcp'
 import { ServerManager } from './../tests/helpers/ServerManager.mjs'
 
-import { X402Middleware } from './../src/index.mjs'
+import { X402Middleware } from './../src/legacy/index.mjs'
 
 import { schema as ping } from './../tests/schemas/v1.2.0/x402/ping.mjs'
 import { schema as pinataRead } from './../tests/schemas/v1.2.0/pinata/read.mjs'
