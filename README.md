@@ -1,11 +1,9 @@
-[![Test](https://img.shields.io/github/actions/workflow/status/flowmcp/flowmcp/test-on-release.yml)]() ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+[![Test](https://img.shields.io/github/actions/workflow/status/FlowMCP/x402-mcp-middleware/test-on-release.yml)](https://github.com/FlowMCP/x402-mcp-middleware/actions) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
 # X402 Middleware
 An Express-compatible payment gateway middleware for X402-protected MCP endpoints.
 
-This module provides a middleware component for building secure, payment-enabled server endpoints using the X402 micropayment protocol. It supports dynamic payment requirement injection, verification logic via `x402-core`, and seamless integration with `flowmcp`-based client tooling.
-
----
+This module provides a middleware component for building secure, payment-enabled server endpoints using the X402 micropayment protocol. It supports dynamic payment requirement injection, verification logic via `x402-core`, and seamless integration with `flowmcp`-based client tooling. The middleware handles the complete payment flow: serving `X-PAYMENT` requirements on protected calls, validating payment headers, and settling transactions.
 
 ## Quickstart
 
@@ -19,11 +17,13 @@ npm i
 
 You can now run a payment-enabled server and client with the examples below.
 
----
-
 ### Server
 
-The following example sets up a remote server using `X402Middleware`:
+> Use:
+>
+> * `cfg` -> configuration with chainId, contracts, paymentOptions, and restrictedCalls
+> * `x402Credentials` -> resolved from .env using `ServerManager`
+> * `x402PrivateKey` -> facilitator wallet private key
 
 ```javascript
 import { RemoteServer } from 'mcpServers'
@@ -92,11 +92,13 @@ remoteServer.addActivationPayloads( {
 remoteServer.start()
 ```
 
----
-
 ### Client
 
-The following example demonstrates how a client can consume the secured endpoint using `MCPClientSSE`:
+> Use:
+>
+> * `clientCredentials` -> resolved from .env using `ServerManager`
+> * `allowedPaymentOptions` -> tokens and max amounts the client allows
+> * `MCPClientSSE` -> SSE client for MCP communication
 
 ```javascript
 import { MCPClientSSE } from './client/MCPClientSSE.mjs'
@@ -179,20 +181,28 @@ console.log( 'Status:', status, 'Data:', data.result.content )
 await client.close()
 ```
 
----
-
 ## Features
 
-* Drop-in Express-compatible middleware for X402 micropayment protection
-* Enforces dynamic, schema-based payment requirements per endpoint
-* Automatic payment header verification and retry logic
-* Integrates seamlessly with `flowmcp` activation payloads and schemas
-* Chain-agnostic configuration using `chainId`, `contracts`, and `paymentOptions`
-* Validates input parameters and environment structure at runtime
-* Supports multiple payment options per endpoint with fallback logic
-* Designed for modular integration with `RemoteServer` and `ClientExact`
+* **Drop-in Express Middleware**
+  Integrates seamlessly with Express-based servers using standard `app.use()` pattern.
 
----
+* **Dynamic Payment Requirements**
+  Enforces schema-based payment requirements per endpoint with configurable `restrictedCalls`.
+
+* **Automatic Payment Verification**
+  Validates `X-PAYMENT` headers including signature, time window, chain, and nonce checks.
+
+* **Chain-Agnostic Configuration**
+  Supports multiple chains and tokens via `chainId`, `contracts`, and `paymentOptions` config.
+
+* **FlowMCP Integration**
+  Works seamlessly with `flowmcp` activation payloads and schemas for MCP server patterns.
+
+* **Retry Logic Support**
+  Client-side payment handler supports automatic retry with payment header injection.
+
+* **Meta-Transaction Settlement**
+  Server executes authorized transfers - no user gas fees, full control over execution.
 
 ## Table of Contents
 
@@ -202,60 +212,170 @@ await client.close()
     - [Client](#client)
   - [Features](#features)
   - [Table of Contents](#table-of-contents)
-  - [Methods](#methods)
-    - [create](#create)
-    - [mcp](#mcp)
+  - [METHODS - X402Middleware](#methods---x402middleware)
+    - [.create()](#create)
+    - [.mcp()](#mcp)
+  - [Configuration](#configuration)
+    - [restrictedCalls](#restrictedcalls)
+    - [paymentOptions](#paymentoptions)
+    - [contracts](#contracts)
   - [Contribution](#contribution)
   - [License](#license)
 
----
 
-## Methods
 
-The `X402Middleware` class provides middleware functionality for X402-secured endpoints, including dynamic payment requirement handling and server initialization. The following methods are available:
 
-* `.create()` – initializes the middleware instance asynchronously.
-* `.mcp()` – returns the middleware handler function.
 
-### create
+## METHODS - X402Middleware
+This class provides middleware functionality for X402-secured endpoints, including dynamic payment requirement handling and server initialization. The available methods support middleware creation and Express integration. See also [.create()](#create) and [.mcp()](#mcp).
 
+### .create()
 Creates an instance of `X402Middleware`. This method validates the input, prepares the payment requirements, initializes the `ServerExact` instance, and sets the wallet using the private key.
 
-```javascript
-static .create( {
-    chainId,
-    chainName,
-    contracts,
-    paymentOptions,
-    restrictedCalls,
-    x402Credentials,
-    x402PrivateKey
-} )
+**Method**
+```
+static async .create( { chainId, chainName, contracts, paymentOptions, restrictedCalls, x402Credentials, x402PrivateKey } )
 ```
 
 | Key               | Type   | Description                                                                | Required |
-| ----------------- | ------ | -------------------------------------------------------------------------- | -------- |
-| `chainId`         | number | Chain ID for the blockchain network.                                       | Yes      |
-| `chainName`       | string | Name of the blockchain network.                                            | Yes      |
-| `contracts`       | object | Object mapping contract IDs to contract metadata.                          | Yes      |
-| `paymentOptions`  | object | Available payment options.                                                 | Yes      |
-| `restrictedCalls` | array  | Calls requiring payment with `method`, `name`, and `activePaymentOptions`. | Yes      |
-| `x402Credentials` | object | X402 credentials including `serverProviderUrl`.                            | Yes      |
-| `x402PrivateKey`  | string | Wallet private key used for authorization.                                 | Yes      |
+|-------------------|--------|----------------------------------------------------------------------------|----------|
+| chainId           | number | Chain ID for the blockchain network (e.g., `84532` for Base Sepolia).      | Yes      |
+| chainName         | string | Name of the blockchain network (e.g., `'base-sepolia'`).                   | Yes      |
+| contracts         | object | Object mapping contract IDs to contract metadata (address, decimals, etc). | Yes      |
+| paymentOptions    | object | Available payment options keyed by option ID.                              | Yes      |
+| restrictedCalls   | array  | Calls requiring payment with `method`, `name`, and `activePaymentOptions`. | Yes      |
+| x402Credentials   | object | X402 credentials including `serverProviderUrl`.                            | Yes      |
+| x402PrivateKey    | string | Wallet private key used for transaction signing.                           | Yes      |
 
-**Returns:** an instance of `X402Middleware`
+**Example**
+```js
+const middleware = await X402Middleware
+    .create( {
+        chainId: 84532,
+        chainName: 'base-sepolia',
+        contracts: {
+            'usdc-sepolia': {
+                domainName: 'USDC',
+                address: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+                assetType: 'erc20',
+                decimals: 6
+            }
+        },
+        paymentOptions: {
+            'usdc-sepolia': {
+                contractId: 'usdc-sepolia',
+                maxAmountRequired: '0.01',
+                payTo: '{{payTo1}}'
+            }
+        },
+        restrictedCalls: [
+            { method: 'tools/call', name: 'paid_ping_x402', activePaymentOptions: [ 'usdc-sepolia' ] }
+        ],
+        x402Credentials: { serverProviderUrl: 'https://...', payTo1: '0x...' },
+        x402PrivateKey: '0x...'
+    } )
+```
+
+**Returns**
+```js
+returns X402Middleware
+```
+
+| Key        | Type           | Description                                  |
+|------------|----------------|----------------------------------------------|
+| (instance) | X402Middleware | The initialized middleware instance.         |
 
 ---
 
-### mcp
+### .mcp()
+Returns the middleware handler function for Express-like servers. This function intercepts requests, checks if the call requires payment, serves payment requirements or validates payment headers accordingly.
 
-Returns the middleware handler function for Express-like servers.
-
-```javascript
+**Method**
+```
 .mcp()
 ```
 
-**Returns:** an Express-compatible middleware function
+**Example**
+```js
+const app = express()
+app.use( middleware.mcp() )
+```
+
+**Returns**
+```js
+returns function
+```
+
+| Key        | Type     | Description                                           |
+|------------|----------|-------------------------------------------------------|
+| (function) | function | Express-compatible middleware function `(req, res, next)`. |
+
+---
+
+## Configuration
+
+### restrictedCalls
+Array of call definitions that require payment. Each entry specifies which method and name combination triggers payment requirements.
+
+```js
+restrictedCalls: [
+    {
+        method: 'tools/call',              // MCP method type
+        name: 'paid_ping_x402',            // Tool/resource name
+        activePaymentOptions: [ 'usdc-sepolia' ]  // Which payment options to accept
+    }
+]
+```
+
+| Key                   | Type             | Description                                      |
+|-----------------------|------------------|--------------------------------------------------|
+| method                | string           | The MCP method type (e.g., `'tools/call'`).      |
+| name                  | string           | The specific tool or resource name.              |
+| activePaymentOptions  | array of strings | Payment option IDs from `paymentOptions` to use. |
+
+---
+
+### paymentOptions
+Object mapping option IDs to payment configuration. Each option references a contract and defines amount and recipient.
+
+```js
+paymentOptions: {
+    'usdc-sepolia': {
+        contractId: 'usdc-sepolia',        // References contracts[contractId]
+        maxAmountRequired: '0.01',          // Amount in token units (human-readable)
+        payTo: '{{payTo1}}'                 // Alias resolved from x402Credentials
+    }
+}
+```
+
+| Key               | Type   | Description                                              |
+|-------------------|--------|----------------------------------------------------------|
+| contractId        | string | Reference to an entry in `contracts`.                    |
+| maxAmountRequired | string | Payment amount in human-readable units (e.g., `'0.01'`). |
+| payTo             | string | Recipient address or `{{alias}}` placeholder.            |
+
+---
+
+### contracts
+Object mapping contract IDs to token contract metadata used for EIP-712 domain construction and token operations.
+
+```js
+contracts: {
+    'usdc-sepolia': {
+        domainName: 'USDC',                                    // EIP-712 domain name
+        address: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Token contract address
+        assetType: 'erc20',                                    // Asset type
+        decimals: 6                                            // Token decimals
+    }
+}
+```
+
+| Key        | Type   | Description                                    |
+|------------|--------|------------------------------------------------|
+| domainName | string | EIP-712 domain name for signature verification. |
+| address    | string | Token contract address on the chain.           |
+| assetType  | string | Asset type (currently `'erc20'`).              |
+| decimals   | number | Token decimals for amount conversion.          |
 
 ---
 
@@ -271,7 +391,6 @@ To contribute:
 3. Push to the branch: `git push origin feature/my-feature`
 4. Open a pull request
 
----
 
 ## License
 
