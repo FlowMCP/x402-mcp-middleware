@@ -1,6 +1,6 @@
 {
   "name": "x402-mcp-middleware",
-  "version": "0.3.1",
+  "version": "1.0.1",
   "description": "X402 Payment Middleware for MCP Servers",
   "main": "./src/index.mjs",
   "exports": {
