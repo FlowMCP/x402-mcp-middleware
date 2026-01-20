@@ -10,6 +10,8 @@
     "./v2": "./src/v2/index.mjs"
   },
   "scripts": {
+    "test": "jest",
+    "test:coverage:src": "jest --coverage --collectCoverageFrom='src/**/*.mjs'",
     "inspector": "npx @modelcontextprotocol/inspector",
     "test:v1:server": "node tests/v1/1-simple-server.mjs",
     "test:v1:client": "node tests/v1/2-simple-client.mjs",
@@ -23,7 +25,7 @@
   "license": "MIT",
   "type": "module",
    "dependencies": {
-    "x402-core": "github:flowmcp/x402-core#0adfc2980a940d90bb55e9a5bca976af88ba6611"
+    "x402-core": "github:flowmcp/x402-core#7a16532965722045928968a393e67b962939092d"
   },
   "devDependencies": {
     "@modelcontextprotocol/inspector": "^0.14.1",
