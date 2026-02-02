@@ -9,7 +9,7 @@ jest.unstable_mockModule( 'x402-core/v2/exact/evm', () => ( {
     }
 } ) )
 
-const { PaymentRequiredCache } = await import( '../../src/v2/exact/evm/PaymentRequiredCache.mjs' )
+const { PaymentRequiredCache } = await import( '../../src/v2/exact/evm/paymentRequiredCache.mjs' )
 
 
 describe( 'PaymentRequiredCache', () => {

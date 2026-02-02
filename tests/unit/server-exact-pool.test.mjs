@@ -22,7 +22,7 @@ jest.unstable_mockModule( 'x402-core/v2/exact/evm', () => ( {
     NonceStore: mockNonceStore
 } ) )
 
-const { ServerExactPool } = await import( '../../src/v2/exact/evm/ServerExactPool.mjs' )
+const { ServerExactPool } = await import( '../../src/v2/exact/evm/serverExactPool.mjs' )
 
 
 describe( 'ServerExactPool', () => {
