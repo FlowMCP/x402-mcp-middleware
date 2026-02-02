@@ -10,8 +10,8 @@
     "./v2": "./src/v2/index.mjs"
   },
   "scripts": {
-    "test": "jest",
-    "test:coverage:src": "jest --coverage --collectCoverageFrom='src/**/*.mjs'",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "test:coverage:src": "NODE_OPTIONS='--experimental-vm-modules' jest --coverage --collectCoverageFrom='src/**/*.mjs'",
     "inspector": "npx @modelcontextprotocol/inspector",
     "test:v1:server": "node tests/v1/1-simple-server.mjs",
     "test:v1:client": "node tests/v1/2-simple-client.mjs",
@@ -24,14 +24,16 @@
   "author": "",
   "license": "MIT",
   "type": "module",
-   "dependencies": {
-    "x402-core": "github:flowmcp/x402-core#7a16532965722045928968a393e67b962939092d"
+  "dependencies": {
+    "x402-core": "github:flowmcp/x402-core#ffd6fa5"
   },
   "devDependencies": {
+    "@jest/globals": "^30.2.0",
     "@modelcontextprotocol/inspector": "^0.14.1",
     "@modelcontextprotocol/sdk": "^1.13.0",
     "flowmcp": "github:flowmcp/flowmcp#a1523aa60699e168a6c7b4ec923ac5ee4f15d89a",
-    "schemaImporter": "github:flowmcp/flowMCP-schemas#3d378b3a61452126c833d667a9189ca578813c48",
-    "mcpServers": "github:flowmcp/flowmcp-servers#0c3c15d41ded418ad70d84d0ee267009e262af29"
+    "jest": "^30.2.0",
+    "mcpServers": "github:flowmcp/flowmcp-servers#0c3c15d41ded418ad70d84d0ee267009e262af29",
+    "schemaImporter": "github:flowmcp/flowMCP-schemas#3d378b3a61452126c833d667a9189ca578813c48"
   }
 }
